@@ -1,0 +1,17 @@
+node_modules/
+dist/
+build/
+coverage/
+.playwright-mcp/
+.vite/
+
+.DS_Store
+Thumbs.db
+*.log
+
+.env*
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*

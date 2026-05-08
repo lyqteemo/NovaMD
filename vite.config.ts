@@ -6,6 +6,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig(({ command }) => {
   const base = command === 'build' ? '/NovaMD/' : '/';
+  const appUrl = command === 'build' ? 'https://lyqteemo.github.io/NovaMD/' : '/';
 
   return {
     base,
@@ -20,9 +21,9 @@ export default defineConfig(({ command }) => {
           short_name: 'NovaMD',
           description:
             'A local-first Markdown editor with live preview, themes, workspace files, and export tools.',
-          id: base,
-          start_url: base,
-          scope: base,
+          id: appUrl,
+          start_url: appUrl,
+          scope: appUrl,
           theme_color: '#101828',
           background_color: '#f8fafc',
           display: 'standalone',

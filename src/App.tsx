@@ -14,6 +14,7 @@ import { Editor } from './components/Editor';
 import { Preview } from './components/Preview';
 import { FloatingToolbar } from './components/FloatingToolbar';
 import { TableOfContents } from './components/TableOfContents';
+import { TableEditorModal } from './components/TableEditorModal';
 import { useMarkdownHistory } from './hooks/useMarkdownHistory';
 import { 
   Sun, 
@@ -38,35 +39,88 @@ import {
 } from 'lucide-react';
 
 
-const DEFAULT_MARKDOWN = `# NovaMD Pro
+const DEFAULT_MARKDOWN = `# NovaMD 使用说明
 
-A **modern** writing experience. Built with React and Tailwind CSS.
+NovaMD 是一个本地优先的 Markdown 编辑器，支持实时预览、多文档工作区、主题切换、导出和离线安装。
 
-## The Vision
-- **Typora Quality**: Minimalist aesthetics with powerful rendering.
-- **Bi-directional Sync**: Smooth split-pane experience.
-- **Glassmorphism**: Elegant floating controls.
+## 快速开始
 
-| Feature | Status |
-| :--- | :--- |
-| Auto-save | Active |
-| Dark Mode | Supported |
-| Code Highlighting | Prism.js |
+1. 在左上角点击新建按钮创建一份空白文档。
+2. 点击打开按钮，选择本地的 \`.md\`、\`.markdown\`、\`.mdown\` 或 \`.txt\` 文件。
+3. 将 Markdown 文件拖入窗口，也可以直接打开并加入文档列表。
+4. 在编辑区输入内容，右侧预览会同步渲染。
 
-\`\`\`javascript
-const editor = {
-  theme: 'NovaMinimal',
-  focusMode: true,
-  autosave: 'localStorage'
-};
+## 编辑与预览
+
+- 使用顶部的 Writer、Split、Preview 在编辑、分屏和预览模式之间切换。
+- 使用浮动工具栏快速插入标题、粗体、斜体、链接、图片、列表和代码块。
+- 点击浮动工具栏中的表格按钮，可以用可视化表格编辑器插入 Markdown 表格；选中已有表格后再打开，也可以继续编辑。
+- 粘贴或拖入图片时，会自动插入 Base64 图片 Markdown。
+- 右侧目录会根据标题自动生成，点击目录项可以跳转到对应段落。
+
+## 数学公式
+
+行内公式可以写成 $E=mc^2$，会在预览区实时渲染。
+
+块级公式可以使用双美元符号：
+
+$$
+\\int_{-\\infty}^{\\infty} e^{-x^2} dx = \\sqrt{\\pi}
+$$
+
+较长的公式会在预览区内横向滚动，避免撑开页面：
+
+$$
+\\sum_{n=1}^{\\infty} \\frac{1}{n^2} = \\frac{\\pi^2}{6}
+$$
+
+## Mermaid 图表
+
+使用 \`\`\`mermaid 标记代码块即可渲染图表，深色模式下图表颜色会自动适配。
+
+\`\`\`mermaid
+flowchart TD
+  A[打开 Markdown] --> B{是否包含图表}
+  B -- 是 --> C[渲染 Mermaid SVG]
+  B -- 否 --> D[普通 Markdown 预览]
+  C --> E[实时更新预览区]
+  D --> E
 \`\`\`
 
-> "Design is not just what it looks like and feels like. Design is how it works." — Steve Jobs
+## 文件与保存
 
-### Tables & Lists
-- Table stripes and modern padding
-- Accent-colored blockquotes
-- Floating toolbar for formatting
+| 操作 | 说明 |
+| :--- | :--- |
+| 新建 | 创建一份新的 Untitled 文档 |
+| 打开 | 从本地选择 Markdown 文档 |
+| 保存 | 已连接磁盘文件时直接覆盖保存 |
+| 另存 | 未连接磁盘文件时会弹出另存为 |
+| 拖拽 | 将 Markdown 文件拖入窗口即可打开 |
+
+重复打开同一个文件时，NovaMD 会激活已有条目并刷新内容，不会在文件列表里生成重复项。
+
+## 导出
+
+- 点击下载按钮导出 Markdown。
+- 点击 HTML 按钮导出当前预览内容为 HTML。
+- 点击打印按钮通过浏览器打印或保存为 PDF。
+
+## 快捷键
+
+| 快捷键 | 功能 |
+| :--- | :--- |
+| Ctrl / Cmd + O | 打开文档 |
+| Ctrl / Cmd + S | 保存文档 |
+| Ctrl / Cmd + B | 插入粗体 |
+| Ctrl / Cmd + I | 插入斜体 |
+| Ctrl / Cmd + K | 插入链接 |
+| Ctrl / Cmd + P | 打印或导出 PDF |
+
+## PWA 离线使用
+
+NovaMD 已支持作为 PWA 安装到桌面。首次在线打开并完成安装后，应用资源会被缓存，之后可以离线启动并继续编辑本地内容。
+
+> 提示：如果部署版本更新后桌面应用行为异常，可以卸载旧的 PWA，清除站点数据后重新安装。
 `;
 
 const getInitialMarkdown = () => {
@@ -92,7 +146,19 @@ interface OpenDocument {
   id: string;
   name: string;
   content: string;
+  savedContent: string;
   handle: FileSystemFileHandle | null;
+}
+
+function useDebouncedValue<T>(value: T, delay: number) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setDebouncedValue(value), delay);
+    return () => window.clearTimeout(timer);
+  }, [value, delay]);
+
+  return debouncedValue;
 }
 
 export default function App() {
@@ -104,6 +170,7 @@ export default function App() {
   });
 
   const { content, updateContent, undo, redo, canUndo, canRedo } = useMarkdownHistory(getInitialMarkdown());
+  const debouncedPreviewContent = useDebouncedValue(content, 160);
 
   const [viewMode, setViewMode] = useState<'edit' | 'preview' | 'split'>('split');
   const [themePreset, setThemePreset] = useState<ThemePreset>(() => {
@@ -117,11 +184,16 @@ export default function App() {
   const [activeDocumentId, setActiveDocumentId] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [showSaveToast, setShowSaveToast] = useState(false);
+  const [showTableEditor, setShowTableEditor] = useState(false);
+  const [selectedTableMarkdown, setSelectedTableMarkdown] = useState('');
+  const [tableInsertRange, setTableInsertRange] = useState<{ from: number; to: number } | null>(null);
   
   const previewRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<ReactCodeMirrorRef>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scrollingSourceRef = useRef<string | null>(null);
+  const activeDocument = openDocuments.find((document) => document.id === activeDocumentId) || null;
+  const hasUnsavedChanges = activeDocument ? activeDocument.content !== activeDocument.savedContent : false;
 
   const handleOpenDocument = () => {
     fileInputRef.current?.click();
@@ -140,11 +212,17 @@ export default function App() {
     updateContent(document.content);
   }, [updateContent]);
 
-  const addOpenDocument = useCallback((name: string, documentContent: string, handle: FileSystemFileHandle | null) => {
+  const addOpenDocument = useCallback((
+    name: string,
+    documentContent: string,
+    handle: FileSystemFileHandle | null,
+    savedContent = documentContent
+  ) => {
     const document: OpenDocument = {
       id: createDocumentId(),
       name,
       content: documentContent,
+      savedContent,
       handle
     };
 
@@ -182,6 +260,7 @@ export default function App() {
       ...existingDocument,
       name,
       content: documentContent,
+      savedContent: documentContent,
       handle,
     };
 
@@ -199,12 +278,40 @@ export default function App() {
     )));
   };
 
+  const confirmCloseDocument = (document: OpenDocument) => {
+    if (document.content === document.savedContent) return true;
+    return window.confirm(`Close "${document.name}" without saving changes?`);
+  };
+
+  const handleCloseDocument = (documentId: string) => {
+    const targetDocument = openDocuments.find((document) => document.id === documentId);
+    if (!targetDocument || !confirmCloseDocument(targetDocument)) return;
+
+    const remainingDocuments = openDocuments.filter((document) => document.id !== documentId);
+    setOpenDocuments(remainingDocuments);
+
+    if (documentId !== activeDocumentId) return;
+
+    const targetIndex = openDocuments.findIndex((document) => document.id === documentId);
+    const nextDocument = remainingDocuments[Math.min(targetIndex, remainingDocuments.length - 1)] || null;
+
+    if (nextDocument) {
+      activateDocument(nextDocument);
+      return;
+    }
+
+    setActiveDocumentId(null);
+    setActiveFileHandle(null);
+    setActiveDocumentName(null);
+    updateContent('');
+  };
+
   const handleNewDocument = () => {
     const hasContent = content.trim().length > 0;
     const shouldCreate = !hasContent || window.confirm('Create a new document? Unsaved changes will be lost.');
     if (!shouldCreate) return;
 
-    addOpenDocument('Untitled.md', NEW_MARKDOWN, null);
+    addOpenDocument('Untitled.md', NEW_MARKDOWN, null, '');
   };
 
   const isMarkdownFile = (file: File) => {
@@ -300,11 +407,12 @@ export default function App() {
       await writable.close();
       setActiveFileHandle(handle);
       setActiveDocumentName(handle.name);
-      updateActiveOpenDocument({ name: handle.name, handle });
+      updateActiveOpenDocument({ name: handle.name, handle, content, savedContent: content });
       return;
     }
 
     fallbackDownloadMarkdown();
+    updateActiveOpenDocument({ content, savedContent: content });
   };
 
   const handleLocalSave = async () => {
@@ -314,7 +422,7 @@ export default function App() {
         const writable = await (activeFileHandle as any).createWritable();
         await writable.write(content);
         await writable.close();
-        updateActiveOpenDocument({ content, handle: activeFileHandle });
+        updateActiveOpenDocument({ content, savedContent: content, handle: activeFileHandle });
       } else {
         await saveDocumentAs();
       }
@@ -424,6 +532,13 @@ export default function App() {
     let newContent = '';
     let cursorOffset = 0;
 
+    if (type === 'table') {
+      setSelectedTableMarkdown(selectedText);
+      setTableInsertRange({ from: start, to: end });
+      setShowTableEditor(true);
+      return;
+    }
+
     switch (type) {
       case 'bold':
         newContent = `**${selectedText || 'bold text'}**`;
@@ -466,6 +581,23 @@ export default function App() {
     view.focus();
   };
 
+  const insertTableMarkdown = (markdown: string) => {
+    if (!editorRef.current?.view) return;
+
+    const view = editorRef.current.view;
+    const selection = view.state.selection.main;
+    const range = tableInsertRange || { from: selection.from, to: selection.to };
+
+    view.dispatch({
+      changes: { from: range.from, to: range.to, insert: markdown },
+      selection: { anchor: range.from + markdown.length }
+    });
+    view.focus();
+    setShowTableEditor(false);
+    setSelectedTableMarkdown('');
+    setTableInsertRange(null);
+  };
+
   // Sync scroll logic
   const handleEditorScroll = (e: React.UIEvent<HTMLTextAreaElement>) => {
     if (scrollingSourceRef.current && scrollingSourceRef.current !== 'editor') return;
@@ -502,6 +634,19 @@ export default function App() {
       )));
     }
   }, [content, activeDocumentId]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      const hasDirtyDocument = openDocuments.some((document) => document.content !== document.savedContent);
+      if (!hasDirtyDocument) return;
+
+      event.preventDefault();
+      event.returnValue = '';
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [openDocuments]);
 
   useEffect(() => {
     if (!activeDocumentName) {
@@ -559,10 +704,10 @@ export default function App() {
               <span className={cn(
                 "flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded transition-all",
                 isSaving ? "bg-indigo-50 text-indigo-500 animate-pulse" : 
-                (activeDocumentName ? "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500" : "bg-slate-50 dark:bg-slate-900 text-slate-400")
+                (hasUnsavedChanges ? "bg-amber-50 dark:bg-amber-500/10 text-amber-500" : activeDocumentName ? "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500" : "bg-slate-50 dark:bg-slate-900 text-slate-400")
               )}>
                 {isSaving ? <CheckCircle2 size={10} className="animate-spin" /> : <CheckCircle2 size={10} />}
-                {isSaving ? 'Saving...' : (activeFileHandle ? 'Disk Connected' : activeDocumentName ? 'Document Loaded' : 'Draft Mode')}
+                {isSaving ? 'Saving...' : hasUnsavedChanges ? 'Unsaved Changes' : (activeFileHandle ? 'Disk Connected' : activeDocumentName ? 'Document Loaded' : 'Draft Mode')}
               </span>
             </div>
           </div>
@@ -731,14 +876,21 @@ export default function App() {
                   <div className="space-y-1">
                     {openDocuments.map((document) => {
                       const isActive = document.id === activeDocumentId;
+                      const isDirty = document.content !== document.savedContent;
                       return (
-                        <button
+                        <div
                           key={document.id}
-                          type="button"
+                          role="button"
+                          tabIndex={0}
                           onClick={() => activateDocument(document)}
+                          onKeyDown={(event) => {
+                            if (event.key !== 'Enter' && event.key !== ' ') return;
+                            event.preventDefault();
+                            activateDocument(document);
+                          }}
                           title={`Switch to ${document.name}`}
                           className={cn(
-                            "w-full flex items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-semibold transition-all",
+                            "w-full flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-semibold transition-all",
                             isActive
                               ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/20"
                               : "bg-white text-slate-600 hover:bg-slate-100 hover:text-indigo-600 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-indigo-400"
@@ -746,6 +898,15 @@ export default function App() {
                         >
                           <FileText size={14} className={cn("shrink-0", isActive ? "text-white" : "text-indigo-500")} />
                           <span className="min-w-0 flex-1 truncate">{document.name}</span>
+                          {isDirty && (
+                            <span
+                              className={cn(
+                                "h-2 w-2 shrink-0 rounded-full",
+                                isActive ? "bg-amber-200" : "bg-amber-400"
+                              )}
+                              title="Unsaved changes"
+                            />
+                          )}
                           {!document.handle && (
                             <span className={cn(
                               "rounded px-1.5 py-0.5 text-[9px] font-black uppercase tracking-widest",
@@ -754,7 +915,23 @@ export default function App() {
                               local
                             </span>
                           )}
-                        </button>
+                          <button
+                            type="button"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              handleCloseDocument(document.id);
+                            }}
+                            title={`Close ${document.name}`}
+                            className={cn(
+                              "grid h-6 w-6 shrink-0 place-items-center rounded-md text-xs transition-all",
+                              isActive
+                                ? "text-white/70 hover:bg-white/15 hover:text-white"
+                                : "text-slate-400 hover:bg-slate-200 hover:text-red-500 dark:hover:bg-slate-800"
+                            )}
+                          >
+                            ×
+                          </button>
+                        </div>
                       );
                     })}
                   </div>
@@ -802,12 +979,13 @@ export default function App() {
             >
               <div className="flex-grow overflow-hidden flex flex-col">
                 <Preview 
-                  content={content} 
+                  content={debouncedPreviewContent} 
                   onScroll={handlePreviewScroll} 
                   isDarkMode={isDarkMode}
+                  themePreset={themePreset}
                 />
               </div>
-              <TableOfContents content={content} onItemClick={handleJumpToSection} />
+              <TableOfContents content={debouncedPreviewContent} onItemClick={handleJumpToSection} />
             </motion.div>
           )}
         </AnimatePresence>
@@ -828,6 +1006,20 @@ export default function App() {
           >
             保存成功
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showTableEditor && (
+          <TableEditorModal
+            initialMarkdown={selectedTableMarkdown}
+            onClose={() => {
+              setShowTableEditor(false);
+              setSelectedTableMarkdown('');
+              setTableInsertRange(null);
+            }}
+            onInsert={insertTableMarkdown}
+          />
         )}
       </AnimatePresence>
 

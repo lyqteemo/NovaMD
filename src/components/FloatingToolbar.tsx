@@ -7,7 +7,8 @@ import {
   Image as ImageIcon,
   Heading1,
   Heading2,
-  Code
+  Code,
+  Table2
 } from 'lucide-react';
 import { motion } from 'motion/react';
 
@@ -24,6 +25,7 @@ export const FloatingToolbar: React.FC<FloatingToolbarProps> = ({ onInsert }) =>
     { icon: List, label: 'List', type: 'list' },
     { icon: Link, label: 'Link', type: 'link' },
     { icon: ImageIcon, label: 'Image', type: 'image' },
+    { icon: Table2, label: 'Table', type: 'table' },
     { icon: Code, label: 'Code', type: 'code' },
   ];
 

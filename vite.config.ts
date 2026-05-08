@@ -1,5 +1,6 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
+import fs from 'node:fs';
 import path from 'path';
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
@@ -44,7 +45,7 @@ export default defineConfig(({ command }) => {
           ],
         },
         devOptions: {
-          enabled: true,
+          enabled: false,
         },
         workbox: {
           cleanupOutdatedCaches: true,
@@ -78,6 +79,19 @@ export default defineConfig(({ command }) => {
           ],
         },
       }),
+      {
+        name: 'github-pages-spa-fallback',
+        apply: 'build',
+        closeBundle() {
+          const distDir = path.resolve(__dirname, 'dist');
+          const indexPath = path.join(distDir, 'index.html');
+          const fallbackPath = path.join(distDir, '404.html');
+
+          if (fs.existsSync(indexPath)) {
+            fs.copyFileSync(indexPath, fallbackPath);
+          }
+        },
+      },
     ],
     resolve: {
       alias: {
@@ -85,6 +99,7 @@ export default defineConfig(({ command }) => {
       },
     },
     build: {
+      chunkSizeWarningLimit: 700,
       rollupOptions: {
         output: {
           manualChunks(id) {

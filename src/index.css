@@ -84,6 +84,23 @@
   --theme-quote-bg: rgba(124, 58, 237, 0.07);
   --theme-inline-code-bg: rgba(79, 70, 229, 0.09);
   --theme-table-stripe: rgba(248, 250, 252, 0.85);
+  --theme-code-bg: #f8fafc;
+  --theme-code-header: #eef2ff;
+  --theme-code-border: #c7d2fe;
+  --theme-code-text: #1e293b;
+  --theme-code-muted: #64748b;
+  --theme-code-punctuation: #64748b;
+  --theme-code-property: #2563eb;
+  --theme-code-tag: #dc2626;
+  --theme-code-literal: #7c3aed;
+  --theme-code-symbol: #c026d3;
+  --theme-code-string: #15803d;
+  --theme-code-attr: #b45309;
+  --theme-code-function: #0369a1;
+  --theme-code-operator: #be185d;
+  --theme-code-keyword: #4f46e5;
+  --theme-code-regex: #c2410c;
+  --theme-code-variable: #1d4ed8;
   background: var(--theme-shell) !important;
   color: var(--theme-text) !important;
 }
@@ -104,6 +121,23 @@
   --theme-quote-bg: rgba(124, 58, 237, 0.12);
   --theme-inline-code-bg: rgba(99, 102, 241, 0.16);
   --theme-table-stripe: rgba(15, 23, 42, 0.85);
+  --theme-code-bg: #0f172a;
+  --theme-code-header: #111827;
+  --theme-code-border: #334155;
+  --theme-code-text: #dbeafe;
+  --theme-code-muted: #94a3b8;
+  --theme-code-punctuation: #cbd5e1;
+  --theme-code-property: #93c5fd;
+  --theme-code-tag: #fca5a5;
+  --theme-code-literal: #c4b5fd;
+  --theme-code-symbol: #f0abfc;
+  --theme-code-string: #86efac;
+  --theme-code-attr: #fde68a;
+  --theme-code-function: #7dd3fc;
+  --theme-code-operator: #f9a8d4;
+  --theme-code-keyword: #c084fc;
+  --theme-code-regex: #fdba74;
+  --theme-code-variable: #bfdbfe;
 }
 
 .app-shell[data-theme="forest"] {
@@ -124,6 +158,23 @@
   --theme-quote-bg: rgba(16, 185, 129, 0.1);
   --theme-inline-code-bg: rgba(5, 150, 105, 0.11);
   --theme-table-stripe: rgba(237, 247, 240, 0.9);
+  --theme-code-bg: #f1f8f3;
+  --theme-code-header: #e3f4e9;
+  --theme-code-border: #b7dec4;
+  --theme-code-text: #1f3528;
+  --theme-code-muted: #688873;
+  --theme-code-punctuation: #5f7568;
+  --theme-code-property: #047857;
+  --theme-code-tag: #b42318;
+  --theme-code-literal: #7c3aed;
+  --theme-code-symbol: #9f1ab1;
+  --theme-code-string: #15803d;
+  --theme-code-attr: #a16207;
+  --theme-code-function: #047481;
+  --theme-code-operator: #be185d;
+  --theme-code-keyword: #059669;
+  --theme-code-regex: #c2410c;
+  --theme-code-variable: #166534;
 }
 
 .dark .app-shell[data-theme="forest"] {
@@ -142,6 +193,23 @@
   --theme-quote-bg: rgba(16, 185, 129, 0.12);
   --theme-inline-code-bg: rgba(16, 185, 129, 0.16);
   --theme-table-stripe: rgba(11, 36, 24, 0.85);
+  --theme-code-bg: #0b1f16;
+  --theme-code-header: #081a11;
+  --theme-code-border: #1f5c41;
+  --theme-code-text: #d9f5e5;
+  --theme-code-muted: #9cc8ae;
+  --theme-code-punctuation: #a7d9bb;
+  --theme-code-property: #6ee7b7;
+  --theme-code-tag: #fca5a5;
+  --theme-code-literal: #c4b5fd;
+  --theme-code-symbol: #f0abfc;
+  --theme-code-string: #86efac;
+  --theme-code-attr: #fde68a;
+  --theme-code-function: #67e8f9;
+  --theme-code-operator: #f9a8d4;
+  --theme-code-keyword: #34d399;
+  --theme-code-regex: #fdba74;
+  --theme-code-variable: #bbf7d0;
 }
 
 .app-shell[data-theme="rose"] {
@@ -162,6 +230,23 @@
   --theme-quote-bg: rgba(244, 63, 94, 0.09);
   --theme-inline-code-bg: rgba(225, 29, 72, 0.1);
   --theme-table-stripe: rgba(255, 241, 244, 0.9);
+  --theme-code-bg: #fff5f7;
+  --theme-code-header: #fff1f4;
+  --theme-code-border: #fecdd3;
+  --theme-code-text: #3b2028;
+  --theme-code-muted: #8b6470;
+  --theme-code-punctuation: #7a5a63;
+  --theme-code-property: #be123c;
+  --theme-code-tag: #dc2626;
+  --theme-code-literal: #7e22ce;
+  --theme-code-symbol: #c026d3;
+  --theme-code-string: #15803d;
+  --theme-code-attr: #b45309;
+  --theme-code-function: #0369a1;
+  --theme-code-operator: #db2777;
+  --theme-code-keyword: #e11d48;
+  --theme-code-regex: #c2410c;
+  --theme-code-variable: #be123c;
 }
 
 .dark .app-shell[data-theme="rose"] {
@@ -180,6 +265,23 @@
   --theme-quote-bg: rgba(244, 63, 94, 0.13);
   --theme-inline-code-bg: rgba(244, 63, 94, 0.16);
   --theme-table-stripe: rgba(43, 16, 24, 0.85);
+  --theme-code-bg: #220d14;
+  --theme-code-header: #210b12;
+  --theme-code-border: #5f1e31;
+  --theme-code-text: #ffe4ea;
+  --theme-code-muted: #e7a3b1;
+  --theme-code-punctuation: #fecdd3;
+  --theme-code-property: #fda4af;
+  --theme-code-tag: #fca5a5;
+  --theme-code-literal: #c4b5fd;
+  --theme-code-symbol: #f0abfc;
+  --theme-code-string: #86efac;
+  --theme-code-attr: #fde68a;
+  --theme-code-function: #7dd3fc;
+  --theme-code-operator: #f9a8d4;
+  --theme-code-keyword: #fb7185;
+  --theme-code-regex: #fdba74;
+  --theme-code-variable: #fecdd3;
 }
 
 .app-shell[data-theme="ink"] {
@@ -200,6 +302,23 @@
   --theme-quote-bg: rgba(37, 99, 235, 0.08);
   --theme-inline-code-bg: rgba(37, 99, 235, 0.1);
   --theme-table-stripe: rgba(238, 242, 248, 0.9);
+  --theme-code-bg: #f8fafc;
+  --theme-code-header: #eef2f8;
+  --theme-code-border: #c8d4e5;
+  --theme-code-text: #172033;
+  --theme-code-muted: #647087;
+  --theme-code-punctuation: #647087;
+  --theme-code-property: #2563eb;
+  --theme-code-tag: #dc2626;
+  --theme-code-literal: #7c3aed;
+  --theme-code-symbol: #c026d3;
+  --theme-code-string: #15803d;
+  --theme-code-attr: #b45309;
+  --theme-code-function: #0369a1;
+  --theme-code-operator: #be185d;
+  --theme-code-keyword: #1d4ed8;
+  --theme-code-regex: #c2410c;
+  --theme-code-variable: #1e40af;
 }
 
 .dark .app-shell[data-theme="ink"] {
@@ -218,6 +337,23 @@
   --theme-quote-bg: rgba(37, 99, 235, 0.13);
   --theme-inline-code-bg: rgba(37, 99, 235, 0.18);
   --theme-table-stripe: rgba(13, 20, 38, 0.9);
+  --theme-code-bg: #0a1020;
+  --theme-code-header: #080d1d;
+  --theme-code-border: #263757;
+  --theme-code-text: #e6ecff;
+  --theme-code-muted: #9aa7c7;
+  --theme-code-punctuation: #cbd5e1;
+  --theme-code-property: #93c5fd;
+  --theme-code-tag: #fca5a5;
+  --theme-code-literal: #c4b5fd;
+  --theme-code-symbol: #f0abfc;
+  --theme-code-string: #86efac;
+  --theme-code-attr: #fde68a;
+  --theme-code-function: #7dd3fc;
+  --theme-code-operator: #f9a8d4;
+  --theme-code-keyword: #60a5fa;
+  --theme-code-regex: #fdba74;
+  --theme-code-variable: #bfdbfe;
 }
 
 .app-nav,
@@ -307,6 +443,82 @@
 
 .markdown-body pre { @apply mb-8 rounded-xl overflow-hidden bg-slate-950 shadow-2xl dark:bg-slate-950; }
 
+.markdown-body .code-card {
+  @apply mb-8 overflow-hidden rounded-xl border shadow-2xl;
+  background: var(--theme-code-bg);
+  border-color: var(--theme-code-border);
+  box-shadow: 0 24px 60px -30px color-mix(in srgb, var(--theme-accent) 34%, transparent);
+}
+
+.markdown-body .code-card-header {
+  @apply flex h-11 items-center justify-between gap-3 border-b px-4;
+  background: var(--theme-code-header);
+  border-color: var(--theme-code-border);
+}
+
+.markdown-body .code-card-language {
+  @apply min-w-0 truncate font-mono text-[11px] font-black uppercase tracking-[0.18em];
+  color: var(--theme-code-muted);
+}
+
+.markdown-body .code-copy-button {
+  @apply inline-flex h-8 shrink-0 items-center gap-1.5 rounded-lg border px-2.5 text-[11px] font-bold transition-all active:scale-95;
+  background: var(--theme-preview-paper);
+  border-color: var(--theme-code-border);
+  color: var(--theme-code-muted);
+}
+
+.markdown-body .code-copy-button:hover {
+  background: var(--theme-accent-soft);
+  border-color: var(--theme-accent);
+  color: var(--theme-accent);
+}
+
+.markdown-body .code-card-body {
+  @apply overflow-x-auto px-5 py-4;
+  scrollbar-width: thin;
+  scrollbar-color: var(--theme-accent) transparent;
+}
+
+.markdown-body .code-card-body::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.markdown-body .code-card-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.markdown-body .code-card-body::-webkit-scrollbar-thumb {
+  background: var(--theme-accent);
+  border-radius: 999px;
+}
+
+.markdown-body .code-card-diagram {
+  background: var(--theme-code-bg) !important;
+}
+
+.markdown-body .mermaid-card-body {
+  @apply overflow-x-auto overflow-y-hidden px-4 py-5;
+  background: var(--theme-code-bg) !important;
+  scrollbar-width: thin;
+  scrollbar-color: var(--theme-accent) transparent;
+}
+
+.markdown-body .mermaid-card-body::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.markdown-body .mermaid-card-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.markdown-body .mermaid-card-body::-webkit-scrollbar-thumb {
+  background: var(--theme-accent);
+  border-radius: 999px;
+}
+
 .markdown-body pre code {
   @apply bg-transparent p-0 font-mono text-[0.92em] leading-7 text-slate-100;
 }
@@ -324,6 +536,54 @@
 
 .markdown-body .preview-code-content {
   @apply block bg-transparent;
+}
+
+.markdown-body pre:has(.mermaid-block),
+.markdown-body pre:has(.mermaid-error) {
+  @apply bg-transparent shadow-none;
+}
+
+.markdown-body .mermaid-block {
+  @apply overflow-x-auto overflow-y-hidden;
+  max-width: 100%;
+}
+
+.markdown-body .mermaid-block svg {
+  display: block;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0 auto;
+}
+
+.markdown-body .mermaid-block svg[width][height] {
+  width: auto;
+}
+
+.markdown-body .mermaid-error {
+  @apply whitespace-pre-wrap rounded-lg border px-4 py-3 font-mono text-sm;
+  background: var(--theme-inline-code-bg) !important;
+  border-color: var(--theme-border) !important;
+  color: var(--theme-link) !important;
+}
+
+.markdown-body .katex {
+  font-size: 1.04em;
+}
+
+.markdown-body .katex-display {
+  @apply my-8 overflow-x-auto overflow-y-hidden rounded-lg px-4 py-3;
+  background: var(--theme-muted-panel) !important;
+  max-width: 100%;
+}
+
+.markdown-body .katex-display > .katex {
+  display: inline-block;
+  max-width: 100%;
+}
+
+.markdown-body .katex-html {
+  max-width: 100%;
 }
 
 .markdown-body table { @apply w-full mb-8 border-collapse overflow-hidden rounded-lg border; border-color: var(--theme-border) !important; }

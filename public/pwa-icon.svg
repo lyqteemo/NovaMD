@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title>NovaMD</title>
+  <rect width="512" height="512" rx="112" fill="#101828"/>
+  <path d="M120 368V144h66l70 118 70-118h66v224h-64V242l-55 91h-34l-55-91v126h-64Z" fill="#f8fafc"/>
+  <path d="M132 112h248c19 0 34 15 34 34v220c0 19-15 34-34 34H132c-19 0-34-15-34-34V146c0-19 15-34 34-34Zm0 28c-3 0-6 3-6 6v220c0 3 3 6 6 6h248c3 0 6-3 6-6V146c0-3-3-6-6-6H132Z" fill="#38bdf8" opacity=".95"/>
+  <path d="M340 98l20-42 20 42 42 20-42 20-20 42-20-42-42-20 42-20Z" fill="#facc15"/>
+</svg>

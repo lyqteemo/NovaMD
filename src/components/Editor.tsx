@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
-import { languages } from '@codemirror/language-data';
 import { EditorView } from '@codemirror/view';
 import { ReactCodeMirrorRef } from '@uiw/react-codemirror';
 
@@ -77,7 +76,7 @@ export const Editor: React.FC<EditorProps> = ({ value, onChange, onScroll, onSav
         height="100%"
         theme={isDarkMode ? 'dark' : 'light'}
         extensions={[
-          markdown({ base: markdownLanguage, codeLanguages: languages }),
+          markdown({ base: markdownLanguage }),
           EditorView.lineWrapping,
           EditorView.domEventHandlers({
             keydown(event) {

@@ -84,5 +84,38 @@ export default defineConfig(({ command }) => {
         '@': path.resolve(__dirname, '.'),
       },
     },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (!id.includes('node_modules')) return;
+            if (id.includes('react-dom') || id.includes('react/')) return 'react-vendor';
+            if (id.includes('@uiw/react-codemirror')) return 'uiw-codemirror';
+            if (id.includes('@codemirror/')) {
+              const match = id.match(/node_modules\/@codemirror\/([^/]+)/);
+              return match ? `codemirror-${match[1]}` : 'codemirror-vendor';
+            }
+            if (id.includes('@lezer/')) {
+              const match = id.match(/node_modules\/@lezer\/([^/]+)/);
+              return match ? `lezer-${match[1]}` : 'lezer-vendor';
+            }
+            if (
+              id.includes('react-markdown') ||
+              id.includes('react-syntax-highlighter') ||
+              id.includes('remark-gfm') ||
+              id.includes('refractor') ||
+              id.includes('unified') ||
+              id.includes('micromark') ||
+              id.includes('hast') ||
+              id.includes('mdast')
+            ) {
+              return 'markdown-vendor';
+            }
+            if (id.includes('motion')) return 'motion-vendor';
+            if (id.includes('lucide-react')) return 'icons-vendor';
+          },
+        },
+      },
+    },
   };
 });

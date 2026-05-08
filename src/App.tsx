@@ -8,7 +8,7 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { motion, AnimatePresence } from 'motion/react';
 import hotkeys from 'hotkeys-js';
-import CodeMirror, { ReactCodeMirrorRef } from '@uiw/react-codemirror';
+import { ReactCodeMirrorRef } from '@uiw/react-codemirror';
 import { cn } from './lib/utils';
 import { Editor } from './components/Editor';
 import { Preview } from './components/Preview';
@@ -133,14 +133,14 @@ export default function App() {
       : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
   };
 
-  const activateDocument = (document: OpenDocument) => {
+  const activateDocument = useCallback((document: OpenDocument) => {
     setActiveDocumentId(document.id);
     setActiveFileHandle(document.handle);
     setActiveDocumentName(document.name);
     updateContent(document.content);
-  };
+  }, [updateContent]);
 
-  const addOpenDocument = (name: string, documentContent: string, handle: FileSystemFileHandle | null) => {
+  const addOpenDocument = useCallback((name: string, documentContent: string, handle: FileSystemFileHandle | null) => {
     const document: OpenDocument = {
       id: createDocumentId(),
       name,
@@ -151,7 +151,46 @@ export default function App() {
     setOpenDocuments(prev => [...prev, document]);
     activateDocument(document);
     setShowSidebar(true);
-  };
+  }, [activateDocument]);
+
+  const openOrActivateDocument = useCallback(async (
+    name: string,
+    documentContent: string,
+    handle: FileSystemFileHandle | null
+  ) => {
+    let existingDocument: OpenDocument | undefined;
+
+    if (handle) {
+      for (const document of openDocuments) {
+        if (document.handle && await handle.isSameEntry(document.handle)) {
+          existingDocument = document;
+          break;
+        }
+      }
+    } else {
+      existingDocument = openDocuments.find((document) => (
+        !document.handle && document.name === name
+      ));
+    }
+
+    if (!existingDocument) {
+      addOpenDocument(name, documentContent, handle);
+      return;
+    }
+
+    const refreshedDocument = {
+      ...existingDocument,
+      name,
+      content: documentContent,
+      handle,
+    };
+
+    setOpenDocuments(prev => prev.map(document => (
+      document.id === existingDocument.id ? refreshedDocument : document
+    )));
+    activateDocument(refreshedDocument);
+    setShowSidebar(true);
+  }, [activateDocument, addOpenDocument, openDocuments]);
 
   const updateActiveOpenDocument = (updates: Partial<Omit<OpenDocument, 'id'>>) => {
     if (!activeDocumentId) return;
@@ -175,14 +214,14 @@ export default function App() {
 
   const openMarkdownFile = async (file: File) => {
     const text = await file.text();
-    addOpenDocument(file.name, text, null);
+    await openOrActivateDocument(file.name, text, null);
   };
 
   const handleFileSelect = async (handle: FileSystemFileHandle) => {
     try {
       const file = await handle.getFile();
       const text = await file.text();
-      addOpenDocument(handle.name, text, handle);
+      await openOrActivateDocument(handle.name, text, handle);
     } catch (err) {
       console.error('Failed to read file', err);
     }
